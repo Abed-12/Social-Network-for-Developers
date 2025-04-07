@@ -5,6 +5,7 @@ import ensureAuthenticated from '../../middleware/auth.js';
 import { check, validationResult } from 'express-validator';
 import Profile from '../../models/Profile.js';
 import User from '../../models/User.js';
+import Post from '../../models/Post.js';
 
 const router = express.Router();
 
@@ -137,7 +138,8 @@ router.get('/user/:user_id', async (req, res) => {
 // @access Private
 router.delete('/', ensureAuthenticated, async (req, res) => {
     try {
-        // @todo - Remove user & posts
+        // Remove user posts
+        await Post.deleteMany({ user: req.user.id });
 
         // Remove profile
         await Profile.findOneAndDelete({ user: req.user.id });
